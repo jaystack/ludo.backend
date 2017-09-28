@@ -79,10 +79,16 @@ io.on('connection', function (socket) {
     socket.on('dice', function (data) {
       console.log("YEEE", data);
       var result = (Math.floor(Math.random() * 6) + 1);
-      // we tell the client to execute 'new message'
-      socket.broadcast.emit('dice', {
+
+      io.emit('dice', {
         username: socket.username,
         res: result,
       });
+
+      // we tell the client to execute 'new message'
+      // socket.broadcast.emit('dice', {
+      //   username: socket.username,
+      //   res: result,
+      // });
     });
 });
