@@ -76,19 +76,19 @@ io.on('connection', function (socket) {
 
   //things
     // when the client emits 'new message', this listens and executes
-    socket.on('dice', function (data) {
-      console.log("YEEE", data);
+    socket.on('dice', function () {
+      console.log("dice");
       var result = (Math.floor(Math.random() * 6) + 1);
 
       io.emit('dice', {
         username: socket.username,
         res: result,
       });
+    });
 
-      // we tell the client to execute 'new message'
-      // socket.broadcast.emit('dice', {
-      //   username: socket.username,
-      //   res: result,
-      // });
+    socket.on('step', function (data) {
+      console.log("step", data);
+
+      io.emit('step', data);
     });
 });

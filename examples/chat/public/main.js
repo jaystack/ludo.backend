@@ -29,7 +29,14 @@ $(function () {
   //dice
   window.doDice = function () {
     if (connected) {
-      socket.emit('dice', "a");
+      socket.emit('dice');
+    }
+  }
+
+  //step
+  window.doStep = function () {
+    if (connected) {
+      socket.emit('step', { puppet: 1, field: 5 });
     }
   }
 
@@ -289,9 +296,11 @@ $(function () {
 
   ////
   socket.on('dice', function (data) {
-    console.log("asdsadad");
     $("#dice_result").text(data.res);
   });
 
+  socket.on('step', function (data) {
+    $("#step_result").text(JSON.stringify(data));
+  });
 
 });
