@@ -1,4 +1,4 @@
-$(function() {
+$(function () {
   var FADE_TIME = 150; // ms
   var TYPING_TIMER_LENGTH = 400; // ms
   var COLORS = [
@@ -25,7 +25,15 @@ $(function() {
 
   var socket = io();
 
-  function addParticipantsMessage (data) {
+  ///things:
+  //dice
+  window.doDice = function () {
+    if (connected) {
+      socket.emit('dice', "a");
+    }
+  }
+
+  function addParticipantsMessage(data) {
     var message = '';
     if (data.numUsers === 1) {
       message += "there's 1 participant";
@@ -36,7 +44,7 @@ $(function() {
   }
 
   // Sets the client's username
-  function setUsername () {
+  function setUsername() {
     username = cleanInput($usernameInput.val().trim());
 
     // If the username is valid
@@ -52,7 +60,7 @@ $(function() {
   }
 
   // Sends a chat message
-  function sendMessage () {
+  function sendMessage() {
     var message = $inputMessage.val();
     // Prevent markup from being injected into the message
     message = cleanInput(message);
@@ -69,13 +77,13 @@ $(function() {
   }
 
   // Log a message
-  function log (message, options) {
+  function log(message, options) {
     var $el = $('<li>').addClass('log').text(message);
     addMessageElement($el, options);
   }
 
   // Adds the visual chat message to the message list
-  function addChatMessage (data, options) {
+  function addChatMessage(data, options) {
     // Don't fade the message in if there is an 'X was typing'
     var $typingMessages = getTypingMessages(data);
     options = options || {};
@@ -100,14 +108,14 @@ $(function() {
   }
 
   // Adds the visual chat typing message
-  function addChatTyping (data) {
+  function addChatTyping(data) {
     data.typing = true;
     data.message = 'is typing';
     addChatMessage(data);
   }
 
   // Removes the visual chat typing message
-  function removeChatTyping (data) {
+  function removeChatTyping(data) {
     getTypingMessages(data).fadeOut(function () {
       $(this).remove();
     });
@@ -118,7 +126,7 @@ $(function() {
   // options.fade - If the element should fade-in (default = true)
   // options.prepend - If the element should prepend
   //   all other messages (default = false)
-  function addMessageElement (el, options) {
+  function addMessageElement(el, options) {
     var $el = $(el);
 
     // Setup default options
@@ -145,12 +153,12 @@ $(function() {
   }
 
   // Prevents input from having injected markup
-  function cleanInput (input) {
+  function cleanInput(input) {
     return $('<div/>').text(input).html();
   }
 
   // Updates the typing event
-  function updateTyping () {
+  function updateTyping() {
     if (connected) {
       if (!typing) {
         typing = true;
@@ -170,18 +178,18 @@ $(function() {
   }
 
   // Gets the 'X is typing' messages of a user
-  function getTypingMessages (data) {
+  function getTypingMessages(data) {
     return $('.typing.message').filter(function (i) {
       return $(this).data('username') === data.username;
     });
   }
 
   // Gets the color of a username through our hash function
-  function getUsernameColor (username) {
+  function getUsernameColor(username) {
     // Compute hash code
     var hash = 7;
     for (var i = 0; i < username.length; i++) {
-       hash = username.charCodeAt(i) + (hash << 5) - hash;
+      hash = username.charCodeAt(i) + (hash << 5) - hash;
     }
     // Calculate color
     var index = Math.abs(hash % COLORS.length);
@@ -207,7 +215,7 @@ $(function() {
     }
   });
 
-  $inputMessage.on('input', function() {
+  $inputMessage.on('input', function () {
     updateTyping();
   });
 
@@ -278,5 +286,12 @@ $(function() {
   socket.on('reconnect_error', function () {
     log('attempt to reconnect has failed');
   });
+
+  ////
+  socket.on('dice', function (data) {
+    console.log("asdsadad");
+    $("#dice_result").text(data.res);
+  });
+
 
 });
